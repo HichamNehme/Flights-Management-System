@@ -1,3 +1,4 @@
+using FMS_BAL.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
@@ -15,18 +16,20 @@ namespace Flights_Management_System.Controllers
         private readonly string _aviationStackApiKey;
         private readonly string _aviationStackAccessKey;
         private readonly HttpClient _httpClient;
-
+        private readonly IFlightsService _flightService;
 
         public FlightController(
             ILogger<FlightController> logger,
             IConfiguration configuration,
-            HttpClient httpClient)
+            HttpClient httpClient,
+            IFlightsService flightService)
         {
             _logger = logger;
             _configuration = configuration;
             _aviationStackApiKey = _configuration.GetSection("API-KEYS:Aviationstack").Value!.ToString()!;
             _aviationStackAccessKey = _configuration.GetSection("ACCESS-KEYS:Aviationstack").Value!.ToString()!;
             _httpClient = httpClient;
+            _flightService = flightService;
         }
 
         [HttpPost]
@@ -45,7 +48,20 @@ namespace Flights_Management_System.Controllers
 
                     RootObject rootObject = JsonConvert.DeserializeObject<RootObject>(jsonResponse)!;
 
-                    return Ok(rootObject);
+                    var extractedData = rootObject.data.Select(x => new FMS_Domain.Model.Flight
+                    {
+                        DepartureAirportCode = x.departure.iata,
+                        DepartureTime = x.departure.scheduled,
+                        ArrivalAirportCode = x.arrival.iata,
+                        ArrivalTime = x.arrival.scheduled,
+                        AirLineCode = x.airline.iata,
+                        FlightCode = x.flight.iata,
+                    }
+                        ).ToList();
+
+                    await _flightService.SaveFlight(extractedData);
+
+                    return Ok(extractedData);
                 }
                 else
                 {

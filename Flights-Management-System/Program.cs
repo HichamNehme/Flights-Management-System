@@ -1,3 +1,5 @@
+using FMS_BAL.IServices;
+using FMS_BAL.Services;
 using FMS_Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +22,7 @@ builder.Services.AddDbContext<FlightsManagementSystemDbContext>(options =>
 });
 
 builder.Services.AddScoped<HttpClient>();
+builder.Services.AddScoped<IFlightsService, FlightsService>();
 
 var app = builder.Build();
 
