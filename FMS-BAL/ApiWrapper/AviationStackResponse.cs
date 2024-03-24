@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace FMS_BAL.ApiWrapper
@@ -82,7 +83,7 @@ namespace FMS_BAL.ApiWrapper
         }
         #endregion
 
-        #region Airport
+        #region Airport        
         public class AirportPagination
         {
             public int offset { get; set; }
@@ -111,7 +112,9 @@ namespace FMS_BAL.ApiWrapper
 
         public class AirportRoot
         {
+            [JsonPropertyName("Pagination")]
             public AirportPagination pagination { get; set; }
+            [JsonPropertyName("Datum")]
             public List<AirportData> data { get; set; }
         }
         #endregion
