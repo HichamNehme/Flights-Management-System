@@ -1,6 +1,7 @@
 ﻿using FMS_BAL.IServices;
 using FMS_Domain;
 using FMS_Domain.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,42 @@ namespace FMS_BAL.Services
             _db = db;
         }
 
-        public async Task SaveFlight(List<Flight> flights) {
-            await _db.Flights.AddRangeAsync(flights);
+        //public async Task SaveFlight(List<Flight> flights) {
+        //    await _db.Flights.AddRangeAsync(flights);
+        //    await _db.SaveChangesAsync();
+        //}
+
+        public async Task SaveFlight(List<Flight> flights)
+        {
+            foreach (var flight in flights)
+            {
+                var existingFlight = await _db.Flights.FirstOrDefaultAsync(f => f.FlightCode == flight.FlightCode);
+
+                if (existingFlight != null)
+                {                    
+                    if (!IsFlightEqual(existingFlight, flight))
+                    {                        
+                        existingFlight.DepartureAirportCode = flight.DepartureAirportCode;
+                        existingFlight.DepartureTime = flight.DepartureTime;
+                        existingFlight.ArrivalAirportCode = flight.ArrivalAirportCode;
+                        existingFlight.ArrivalTime = flight.ArrivalTime;
+                        existingFlight.AirLineCode = flight.AirLineCode;
+                        _db.Flights.Update(existingFlight);
+                    }
+                }
+                else
+                {                    
+                    await _db.Flights.AddAsync(flight);
+                }
+            }
+
             await _db.SaveChangesAsync();
         }
 
+        private bool IsFlightEqual(Flight existingFlight, Flight newFlight)
+        {            
+            return existingFlight.DepartureTime == newFlight.DepartureTime
+                   && existingFlight.ArrivalTime == newFlight.ArrivalTime;
+        }
     }
 }
