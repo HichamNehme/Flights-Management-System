@@ -102,8 +102,8 @@ namespace FMS_BAL.ApiWrapper
             public string? icao_code { get; set; }
             public string? country_iso2 { get; set; }
             public string? geoname_id { get; set; }
-            public string? latitude { get; set; }
-            public string? longitude { get; set; }
+            public double latitude { get; set; }
+            public double longitude { get; set; }
             public string? airport_name { get; set; }
             public string? country_name { get; set; }
             public object phone_number { get; set; }

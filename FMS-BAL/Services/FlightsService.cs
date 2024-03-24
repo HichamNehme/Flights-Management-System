@@ -21,11 +21,6 @@ namespace FMS_BAL.Services
             _db = db;
         }
 
-        //public async Task SaveFlight(List<Flight> flights) {
-        //    await _db.Flights.AddRangeAsync(flights);
-        //    await _db.SaveChangesAsync();
-        //}
-
         public async Task SaveFlight(List<Flight> flights)
         {
             var savedFlights = new List<Flight>();
@@ -47,7 +42,7 @@ namespace FMS_BAL.Services
                     }
                 }
                 else
-                {                    
+                {
                     await _db.Flights.AddAsync(flight);
                     savedFlights.Add(flight);
                 }

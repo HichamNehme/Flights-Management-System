@@ -40,7 +40,7 @@ namespace Flights_Management_System.Controllers
             try
             {
                 var Offset = (searchFlightDTO.PageNumber - 1) * searchFlightDTO.Limit;
-                string apiUrl = $"{_aviationStackApiKey}/flights?access_key={_aviationStackAccessKey}&limit={searchFlightDTO.Limit}&offset={Offset}" ;
+                string apiUrl = $"{_aviationStackApiKey}/flights?access_key={_aviationStackAccessKey}&limit={searchFlightDTO.Limit}&offset={Offset}";
                 HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
 
                 if (response.IsSuccessStatusCode)

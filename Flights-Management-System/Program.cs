@@ -23,6 +23,7 @@ builder.Services.AddDbContext<FlightsManagementSystemDbContext>(options =>
 
 builder.Services.AddScoped<HttpClient>();
 builder.Services.AddScoped<IFlightsService, FlightsService>();
+builder.Services.AddScoped<IAirportsService, AirportsService>();
 
 var app = builder.Build();
 
