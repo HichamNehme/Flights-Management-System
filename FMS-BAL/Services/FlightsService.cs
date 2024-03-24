@@ -28,6 +28,7 @@ namespace FMS_BAL.Services
 
         public async Task SaveFlight(List<Flight> flights)
         {
+            var savedFlights = new List<Flight>();
             foreach (var flight in flights)
             {
                 var existingFlight = await _db.Flights.FirstOrDefaultAsync(f => f.FlightCode == flight.FlightCode);
@@ -42,11 +43,13 @@ namespace FMS_BAL.Services
                         existingFlight.ArrivalTime = flight.ArrivalTime;
                         existingFlight.AirLineCode = flight.AirLineCode;
                         _db.Flights.Update(existingFlight);
+                        savedFlights.Add(existingFlight);
                     }
                 }
                 else
                 {                    
                     await _db.Flights.AddAsync(flight);
+                    savedFlights.Add(flight);
                 }
             }
 

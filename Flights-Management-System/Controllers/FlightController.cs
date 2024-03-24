@@ -1,4 +1,5 @@
 using FMS_BAL.IServices;
+using FMS_Domain.Model.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
@@ -34,12 +35,12 @@ namespace Flights_Management_System.Controllers
 
         [HttpPost]
         [Route("SearchFlights")]
-        public async Task<ActionResult<RootObject>> SearchFlights()
+        public async Task<ActionResult<RootObject>> SearchFlights([FromBody]SearchFlightDTO searchFlightDTO)
         {
-            string apiUrl = $"{_aviationStackApiKey}/flights?access_key={_aviationStackAccessKey}&limit=10";
-
             try
             {
+                var Offset = (searchFlightDTO.PageNumber - 1) * searchFlightDTO.Limit;
+                string apiUrl = $"{_aviationStackApiKey}/flights?access_key={_aviationStackAccessKey}&limit={searchFlightDTO.Limit}&offset={Offset}" ;
                 HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
 
                 if (response.IsSuccessStatusCode)
